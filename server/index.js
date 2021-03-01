@@ -1,6 +1,6 @@
 const express = require('express');
 const app = express();
-const port = 3000;
+const port = 5001;
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const config = require('./config/key');
@@ -30,6 +30,10 @@ mongoose
 
 app.get('/', (req, res) => {
   res.send('Hello World! 2021');
+});
+
+app.get('/api/hello', (req, res) => {
+  res.send('안녕하세요');
 });
 
 app.post('/api/users/register', (req, res) => {
@@ -91,6 +95,15 @@ app.get('/api/users/auth', auth, (req, res) => {
     lastname: req.user.lastname,
     role: req.user.role,
     image: req.user.image,
+  });
+});
+
+app.get('/api/users/logout', auth, (req, res) => {
+  User.findOneAndUpdate({ _id: req.user._id }, { token: '' }, (err, user) => {
+    if (err) return res.json({ success: false, err });
+    return res.status(200).send({
+      success: true,
+    });
   });
 });
 
